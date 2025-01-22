@@ -1,0 +1,12 @@
+demo\entity\Client.class
+demo\controller\ClientController.class
+demo\repository\ClientRepository.class
+demo\transformers\Transformer.class
+demo\service\ClientService.class
+demo\dto\DisplayClientDTO.class
+demo\transformers\DisplayClientTransformer.class
+demo\Application.class
+demo\entity\Client$ClientBuilder.class
+demo\dto\CreateClientDTO.class
+demo\errorhandling\ClientNotFoundException.class
+demo\service\ClientServiceImpl.class

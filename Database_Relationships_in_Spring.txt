@@ -1,0 +1,12 @@
+1. OneToOne Relationship - the child object cannot exist without parent
+        -example: Client & Credit card - Credit card cannot exist without client
+
+
+2. OneToOne Relationship - the child object can exist without the parent
+        -example: Client & Book - Book exists without owner (when not rented from the library)
+
+
+3. OneToMany Relationship
+
+
+4. ManyToMany Relationship

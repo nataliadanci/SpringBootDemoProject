@@ -1,0 +1,11 @@
+C:\Users\natal\Documents\GitHub\SpringBootDemoProject\src\main\java\demo\Application.java
+C:\Users\natal\Documents\GitHub\SpringBootDemoProject\src\main\java\demo\controller\ClientController.java
+C:\Users\natal\Documents\GitHub\SpringBootDemoProject\src\main\java\demo\dto\CreateClientDTO.java
+C:\Users\natal\Documents\GitHub\SpringBootDemoProject\src\main\java\demo\dto\DisplayClientDTO.java
+C:\Users\natal\Documents\GitHub\SpringBootDemoProject\src\main\java\demo\entity\Client.java
+C:\Users\natal\Documents\GitHub\SpringBootDemoProject\src\main\java\demo\errorhandling\ClientNotFoundException.java
+C:\Users\natal\Documents\GitHub\SpringBootDemoProject\src\main\java\demo\repository\ClientRepository.java
+C:\Users\natal\Documents\GitHub\SpringBootDemoProject\src\main\java\demo\service\ClientService.java
+C:\Users\natal\Documents\GitHub\SpringBootDemoProject\src\main\java\demo\service\ClientServiceImpl.java
+C:\Users\natal\Documents\GitHub\SpringBootDemoProject\src\main\java\demo\transformers\DisplayClientTransformer.java
+C:\Users\natal\Documents\GitHub\SpringBootDemoProject\src\main\java\demo\transformers\Transformer.java
