@@ -24,6 +24,9 @@ public class DisplayClientDTO implements Serializable {
     @JsonProperty("credit_card")
     private DisplayCreditCardDTO displayCreditCardDTO;
 
+    @JsonProperty("bookBorrowed")
+    private BookDTO bookBorrowed;
+
     //we are not including password in this DTO because we will use this DTO to get and display a client
     // or a list of clients and the password is confidential
   /*@JsonProperty("password")

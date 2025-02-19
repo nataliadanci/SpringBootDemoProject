@@ -3,10 +3,14 @@
 
 
 2. OneToOne Relationship - the child object can exist without the parent
-        -example: Client & Book - Book exists without owner (when not rented from the library)
+        -example: Client & Book - Book exists without owner (when not rented from the library). In this example we assume a client can
+                                                                                            only rent a single book.
 
 
-3. OneToMany Relationship
+3. OneToMany Relationship - one object of type A can be linked to a set of objects of type B
+        -example: Author & Book - An author wrote multiple books. All these books can only reference a single author
 
 
-4. ManyToMany Relationship
+4. ManyToMany Relationship - multiple objects of type A can be linked to multiple objects of type B
+        -example: Student & Course - a student can participate in multiple courses. In a course multiple students can participate
+        -example: Client & Product

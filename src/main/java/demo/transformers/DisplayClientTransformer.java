@@ -11,8 +11,15 @@ public class DisplayClientTransformer implements Transformer<Client, DisplayClie
     @Autowired
     private DisplayCreditCardTransformer displayCreditCardTransformer;
 
+    @Autowired
+    private BookTransformer bookTransformer;
+
     @Override
     public DisplayClientDTO fromEntity(Client client) {
+
+        if(client==null){
+            return null;
+        }
 
         DisplayClientDTO clientDTO = new DisplayClientDTO();
 
@@ -22,12 +29,17 @@ public class DisplayClientTransformer implements Transformer<Client, DisplayClie
         clientDTO.setClientAddress(client.getClientAddress());
         clientDTO.setUsername(client.getUsername());
         clientDTO.setDisplayCreditCardDTO(displayCreditCardTransformer.fromEntity(client.getCreditCard()));
+        clientDTO.setBookBorrowed(bookTransformer.fromEntity(client.getBookBorrowed()));
 
         return clientDTO;
     }
 
     @Override
     public Client fromDTO(DisplayClientDTO displayClientDTO) {
+
+        if(displayClientDTO==null){
+            return null;
+        }
 
         Client clientEntity = new Client();
 
@@ -37,6 +49,7 @@ public class DisplayClientTransformer implements Transformer<Client, DisplayClie
         clientEntity.setClientAddress(displayClientDTO.getClientAddress());
         clientEntity.setUsername(displayClientDTO.getUsername());
         clientEntity.setCreditCard(displayCreditCardTransformer.fromDTO(displayClientDTO.getDisplayCreditCardDTO()));
+        clientEntity.setBookBorrowed(bookTransformer.fromDTO(displayClientDTO.getBookBorrowed()));
 
         return clientEntity;
     }

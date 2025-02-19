@@ -1,5 +1,6 @@
 package demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,5 +39,8 @@ public class Client {
     @JoinColumn(name = "creditcard_id", referencedColumnName = "id")
     private CreditCard creditCard;
 
+    @OneToOne
+    @JoinColumn(name = "book_id", referencedColumnName = "id")
+    private Book bookBorrowed;
 
 }

@@ -8,11 +8,11 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import demo.dto.CreateClientDTO;
 import demo.dto.CreditCardDTO;
 import demo.dto.DisplayClientDTO;
+import demo.entity.Book;
 import demo.entity.Client;
 import demo.entity.CreditCard;
-import demo.errorhandling.ClientNotFoundException;
-import demo.errorhandling.CreditCardNotFoundException;
-import demo.errorhandling.DuplicatedClientUsernameException;
+import demo.errorhandling.*;
+import demo.repository.BookRepository;
 import demo.repository.ClientRepository;
 import demo.repository.CreditCardRepository;
 import demo.transformers.CreateClientTransformer;
@@ -45,6 +45,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     private CreditCardTransformer creditCardTransformer;
+
+    @Autowired
+    private BookRepository bookRepository;
 
 
     @Override
@@ -185,8 +188,8 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public DisplayClientDTO deleteCreditCardByClientId(Integer client_id) throws ClientNotFoundException, CreditCardNotFoundException{
-        Optional<Client> optionalClient = clientRepository.findById(client_id);
+    public DisplayClientDTO deleteCreditCardByClientId(Integer clientId) throws ClientNotFoundException, CreditCardNotFoundException{
+        Optional<Client> optionalClient = clientRepository.findById(clientId);
         Client foundClient = optionalClient.orElseThrow(()-> new ClientNotFoundException("No client found with this ID."));
         CreditCard foundCreditCard = foundClient.getCreditCard();
 
@@ -203,12 +206,49 @@ public class ClientServiceImpl implements ClientService {
         return displayClientTransformer.fromEntity(savedClient);
     }
 
+    @Override
+    public DisplayClientDTO rentABook(Integer clientId, Integer bookId) throws ClientNotFoundException, BookNotFoundException, BookAlreadyBorrowedException, MultipleBookException {
+        Optional<Client> clientToBeFound = clientRepository.findById(clientId);
+        Client foundClient = clientToBeFound.orElseThrow(() -> new ClientNotFoundException("No client found with this id"));
+
+        Optional<Book> bookToBeFound = bookRepository.findById(bookId);
+        Book foundBook = bookToBeFound.orElseThrow(() -> new BookNotFoundException("No book found with this id"));
+
+        if(foundClient.getBookBorrowed() != null){
+            throw new MultipleBookException("A client can borrow only one book (already has one).");
+        }
+
+        if(foundBook.getBookBorrower() != null){
+            throw new BookAlreadyBorrowedException("Book has already been borrowed.");
+        }
+
+        foundClient.setBookBorrowed(foundBook);
+        Client updatedClient = clientRepository.save(foundClient);
+
+        return displayClientTransformer.fromEntity(updatedClient);
+    }
+
+    @Override
+    public DisplayClientDTO returnBook(Integer clientId) throws ClientNotFoundException, BookNotFoundException{
+        Optional<Client> clientToBeFound = clientRepository.findById(clientId);
+        Client foundClient = clientToBeFound.orElseThrow(() -> new ClientNotFoundException("No client found with this id"));
+
+        if(foundClient.getBookBorrowed() == null){
+            throw new BookNotFoundException("Client doesn't have a borrowed book");
+        }
+
+        foundClient.setBookBorrowed(null);
+        Client updatedClient = clientRepository.save(foundClient);
+        return displayClientTransformer.fromEntity(updatedClient);
+    }
 
     private Client applyPatchToClient(Client foundClientToUpdate, JsonPatch jsonPatch) throws JsonPatchException, JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode patched = jsonPatch.apply(objectMapper.convertValue(foundClientToUpdate, JsonNode.class));
         return objectMapper.treeToValue(patched, Client.class);
     }
+
+
 
 }
 

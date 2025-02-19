@@ -3,8 +3,7 @@ package demo.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import demo.dto.CreateClientDTO;
 import demo.dto.DisplayClientDTO;
-import demo.errorhandling.ClientNotFoundException;
-import demo.errorhandling.DuplicatedClientUsernameException;
+import demo.errorhandling.*;
 import demo.service.ClientService;
 import demo.transformers.CreateToDisplayClientTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,60 +29,60 @@ public class ClientController {
     //GetMapping annotation is used to mark a Java method which
     //represents GET HTTP verb (read operation from CRUD database operations)
     @GetMapping(path = "/all")
-    public @ResponseBody Iterable<DisplayClientDTO> getAllClients(){
+    public @ResponseBody Iterable<DisplayClientDTO> getAllClients() {
         return clientService.findAllClients();
     }
 
     //A PathVariable is a part of a request URL and can be used when you want to be able to fetch a different resource
     //based on a parameter
     @GetMapping(path = "/id/{client_id}")
-    public @ResponseBody DisplayClientDTO getClientByID(@PathVariable("client_id") Integer clientID){
-        try{
+    public @ResponseBody DisplayClientDTO getClientByID(@PathVariable("client_id") Integer clientID) {
+        try {
             return clientService.findClientByID(clientID);
-        } catch(Exception e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage(),e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
 
     @GetMapping(path = "/name/{client_name}")
-    public @ResponseBody DisplayClientDTO getClientByName(@PathVariable("client_name") String clientName){
-        try{
+    public @ResponseBody DisplayClientDTO getClientByName(@PathVariable("client_name") String clientName) {
+        try {
             return clientService.findClientByName(clientName);
-        } catch(Exception e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage(),e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
 
     @DeleteMapping(path = "/delete/id/{id}")
-    public @ResponseBody DisplayClientDTO deleteClientById(@PathVariable("id") Integer id){
-        try{
+    public @ResponseBody DisplayClientDTO deleteClientById(@PathVariable("id") Integer id) {
+        try {
             return clientService.deleteClientById(id);
-        } catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage(),e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
 
     }
 
     @DeleteMapping(path = "/delete/name/{name}")
-    public @ResponseBody DisplayClientDTO deleteClientByName(@PathVariable("name") String name){
-        try{
+    public @ResponseBody DisplayClientDTO deleteClientByName(@PathVariable("name") String name) {
+        try {
             return clientService.deleteClientByName(name);
-        } catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage(),e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
 
     }
 
     //This is the unique correct implementation for a POST request - using a @RequestBody to send a data
     @PostMapping(path = "/add")
-    public ResponseEntity<DisplayClientDTO> createClient(@RequestBody CreateClientDTO createClientDTO){
-        try{
+    public ResponseEntity<DisplayClientDTO> createClient(@RequestBody CreateClientDTO createClientDTO) {
+        try {
             CreateClientDTO savedClientDTO = clientService.saveClient(createClientDTO);
             DisplayClientDTO displayClientDTO = createToDisplayClientTransformer.transform(savedClientDTO);
             return ResponseEntity.created(new URI("/clients/" + savedClientDTO.getId())).body(displayClientDTO);
-        } catch (URISyntaxException e){
+        } catch (URISyntaxException e) {
             return ResponseEntity.notFound().build();
-        } catch (DuplicatedClientUsernameException exception){
+        } catch (DuplicatedClientUsernameException exception) {
             System.out.println(exception.getMessage());
             return ResponseEntity.unprocessableEntity().build();
             //return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(exception.getMessage());
@@ -98,19 +97,19 @@ public class ClientController {
                                                                           @PathVariable("address") String address,
                                                                           @PathVariable("age") Integer age,
                                                                           @PathVariable("username") String username,
-                                                                          @PathVariable("password") String password){
+                                                                          @PathVariable("password") String password) {
         CreateClientDTO clientDTO = CreateClientDTO.builder()
-                                    .name(name)
-                                    .clientAddress(address)
-                                    .age(age)
-                                    .username(username)
-                                    .password(password)
-                                    .build();
-        try{
+                .name(name)
+                .clientAddress(address)
+                .age(age)
+                .username(username)
+                .password(password)
+                .build();
+        try {
             CreateClientDTO savedClientDTO = clientService.saveClient(clientDTO);
             DisplayClientDTO displayClientDTO = createToDisplayClientTransformer.transform(savedClientDTO);
             return ResponseEntity.created(new URI("/clients/" + savedClientDTO.getId())).body(displayClientDTO);
-        } catch (URISyntaxException | DuplicatedClientUsernameException e){
+        } catch (URISyntaxException | DuplicatedClientUsernameException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -133,11 +132,11 @@ public class ClientController {
                 .password(password)
                 .build();
 
-        try{
+        try {
             CreateClientDTO savedClientDTO = clientService.saveClient(clientDTO);
             DisplayClientDTO displayClientDTO = createToDisplayClientTransformer.transform(savedClientDTO);
             return ResponseEntity.created(new URI("/clients/" + savedClientDTO.getId())).body(displayClientDTO);
-        } catch (URISyntaxException | DuplicatedClientUsernameException e){
+        } catch (URISyntaxException | DuplicatedClientUsernameException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -147,13 +146,13 @@ public class ClientController {
     @PutMapping(path = "/update/{id}")
     public ResponseEntity<DisplayClientDTO> updateClient(@RequestBody CreateClientDTO updatedClientDTO,
                                                          @PathVariable("id") Integer id) {
-        try{
+        try {
             CreateClientDTO dbUpdatedClientDTO = clientService.updateClient(id, updatedClientDTO);
             DisplayClientDTO displayClientDTO = createToDisplayClientTransformer.transform(dbUpdatedClientDTO);
             return ResponseEntity.created(new URI("/clients/" + dbUpdatedClientDTO.getId())).body(displayClientDTO);
-        } catch (URISyntaxException | ClientNotFoundException e ){
+        } catch (URISyntaxException | ClientNotFoundException e) {
             return ResponseEntity.notFound().build();
-        } catch (DuplicatedClientUsernameException exception){
+        } catch (DuplicatedClientUsernameException exception) {
             System.out.println(exception.getMessage());
             return ResponseEntity.unprocessableEntity().build();
         }
@@ -161,27 +160,46 @@ public class ClientController {
 
     @PatchMapping(path = "/patch/{id}", consumes = "application/json-patch+json")
     public @ResponseBody DisplayClientDTO patchClient(@PathVariable("id") Integer id,
-                                                      @RequestBody JsonPatch jsonPatch){
-        try{
+                                                      @RequestBody JsonPatch jsonPatch) {
+        try {
             return clientService.patchClient(id, jsonPatch);
-        } catch (ClientNotFoundException e){
+        } catch (ClientNotFoundException e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (JsonPatchException | JsonProcessingException exception){
+        } catch (JsonPatchException | JsonProcessingException exception) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
         }
     }
 
     @DeleteMapping(path = "/delete/client/credit_card/{client_id}")
-    public @ResponseBody DisplayClientDTO deleteClientCreditCard(@PathVariable("client_id") Integer client_id){
-        try{
-            return clientService.deleteCreditCardByClientId(client_id);
-        } catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage(),e);
+    public @ResponseBody DisplayClientDTO deleteClientCreditCard(@PathVariable("client_id") Integer clientId) {
+        try {
+            return clientService.deleteCreditCardByClientId(clientId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
 
     }
 
-    //TODO: COMPLETE DATABASE RELATIONSHIP FILE FOR OneToOne Relationship
-    //TODO: CREATE RELATIONSHIP BETWEEN CLIENT AND BOOK
+    @PutMapping(path = "/rentBook/{client_id}/{book_id}")
+    public @ResponseBody DisplayClientDTO rentABook(@PathVariable("client_id") Integer clientId, @PathVariable("book_id") Integer bookId) {
+        try {
+            return clientService.rentABook(clientId, bookId);
+        } catch (BookNotFoundException | ClientNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (BookAlreadyBorrowedException | MultipleBookException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
+
+    @PutMapping(path = "/returnBook/{client_id}")
+    public @ResponseBody DisplayClientDTO returnBook(@PathVariable("client_id") Integer clientId) {
+        try {
+            return clientService.returnBook(clientId);
+        } catch (ClientNotFoundException | BookNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
 }
+
+

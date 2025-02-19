@@ -6,9 +6,8 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import demo.dto.CreateClientDTO;
 import demo.dto.DisplayClientDTO;
 import demo.entity.Client;
-import demo.errorhandling.ClientNotFoundException;
-import demo.errorhandling.CreditCardNotFoundException;
-import demo.errorhandling.DuplicatedClientUsernameException;
+import demo.errorhandling.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 
@@ -21,5 +20,7 @@ public interface ClientService {
     CreateClientDTO saveClient(CreateClientDTO createClientDTO) throws DuplicatedClientUsernameException;
     CreateClientDTO updateClient(Integer id, CreateClientDTO createClientDTO) throws ClientNotFoundException, DuplicatedClientUsernameException;
     DisplayClientDTO patchClient(Integer id, JsonPatch jsonPatch) throws ClientNotFoundException, JsonPatchException, JsonProcessingException;
-    DisplayClientDTO deleteCreditCardByClientId(Integer client_id) throws ClientNotFoundException, CreditCardNotFoundException;
+    DisplayClientDTO deleteCreditCardByClientId(Integer clientId) throws ClientNotFoundException, CreditCardNotFoundException;
+    DisplayClientDTO rentABook(Integer clientId, Integer bookId) throws ClientNotFoundException, BookNotFoundException, BookAlreadyBorrowedException, MultipleBookException;
+    DisplayClientDTO returnBook(Integer clientId) throws ClientNotFoundException, BookNotFoundException;
 }
